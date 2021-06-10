@@ -1,6 +1,7 @@
 const sharp = require('sharp')
-const { join, basename, extname } = require('path')
-const { mkdir } = require('fs')
+const { join, basename, extname, dirname } = require('path')
+const { mkdirSync, existsSync } = require('fs')
+IS_DEBUG = process.env.DEBUG || false
 
 const createTiles = (fileName, outFolder, tileSize=512) => {
   return new Promise(async (_resolve, _reject) => {
