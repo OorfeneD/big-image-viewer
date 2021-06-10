@@ -2,15 +2,23 @@ const sharp = require('sharp')
 const { join, basename, extname } = require('path')
 const { mkdir } = require('fs')
 
-const createTiles = async (fileName, outFolder, tileSize=512) => {
+const createTiles = (fileName, outFolder, tileSize=512) => {
+  return new Promise(async (_resolve, _reject) => {
   const image = sharp(fileName, {
     limitInputPixels: false,
     pages: -1,
   })
   const tilesOutFolder = join(outFolder, basename(fileName, extname(fileName)))
-  mkdir(tilesOutFolder, function (err) {
-    console.error(err)
+    try {
+      if (!existsSync(tilesOutFolder)) {
+        mkdirSync(tilesOutFolder, {
+          recursive: true
   })
+      }
+    }
+    catch (error) {
+      _reject(error)
+    }
   const meta = await image.metadata()
   const promises = []
   for (let i = 0; i <= Math.floor(meta.width / tileSize); i++) {
@@ -23,15 +31,14 @@ const createTiles = async (fileName, outFolder, tileSize=512) => {
             height: (j + 1) * tileSize < meta.height ? tileSize : meta.height - j * tileSize
           })
           .jpeg({
-            quality: 65
+              quality: 80
           })
           .withMetadata()
           .toFile(join(tilesOutFolder, `${i}_${j}.jpg`), err => {
             if (err) {
               reject(err)
-              return
             }
-            if (!j) {
+              if (!j && IS_DEBUG) {
               console.log(`Row ${i}/${Math.floor(meta.width / tileSize)}`)
             }
             resolve()
@@ -39,6 +46,10 @@ const createTiles = async (fileName, outFolder, tileSize=512) => {
       }))
     }
   }
+    Promise.all(promises).then(_resolve).catch(_reject)
+  })
+}
+
 const createPyramid = (fileName, outFolder="") => {
   return new Promise(async (_resolve, _reject) => {
     const scales = [1024, 2048, 4096, 8192, 16384, 32768, 65536]
