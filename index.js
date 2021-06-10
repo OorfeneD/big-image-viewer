@@ -46,7 +46,6 @@ const createTiles = (fileName, outFolder, tileSize=512) => {
       }))
     }
   }
-<<<<<<< HEAD
     Promise.all(promises).then(_resolve).catch(_reject)
   })
 }
@@ -96,13 +95,9 @@ const createPyramid = (fileName, outFolder="") => {
     }
     await Promise.all(resizePromises).then(_resolve).catch(_reject)
   })
-=======
-  // For future updates with stats presenting:
-  // const results = await Promise.all(promises)
-  await Promise.all(promises)
->>>>>>> parent of 57cd87e... added createPyramid to index.js
 }
 
 module.exports = {
-  createTiles
+  createTiles,
+  createPyramid
 }
