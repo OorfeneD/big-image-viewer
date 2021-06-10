@@ -4,6 +4,9 @@ const { mkdirSync, existsSync } = require('fs')
 const IS_DEBUG = process.env.DEBUG || false
 
 const createTiles = async (fileName, outFolder, tileSize = 512) => {
+  if (!fileName || !outFolder) throw new Error('Parameters must be not empty')
+  if (typeof fileName !== 'string' || typeof outFolder !== 'string') throw new Error('Parameters must be are string')
+  if (!existsSync(fileName)) throw new Error('Image file not found')
   const image = sharp(fileName, {
     limitInputPixels: false,
     pages: -1
@@ -16,7 +19,7 @@ const createTiles = async (fileName, outFolder, tileSize = 512) => {
       })
     }
   } catch (error) {
-    return error
+    throw new Error('Invalid out directory')
   }
   const meta = await image.metadata()
   return new Promise((resolve, reject) => {
@@ -51,6 +54,9 @@ const createTiles = async (fileName, outFolder, tileSize = 512) => {
 }
 
 const createPyramid = async (fileName, outFolder = '') => {
+  if (!fileName || !outFolder) throw new Error('Parameters must be not empty')
+  if (typeof fileName !== 'string' || typeof outFolder !== 'string') throw new Error('Parameters must be are string')
+  if (!existsSync(fileName)) throw new Error('Image file not found')
   const scales = [1024, 2048, 4096, 8192, 16384, 32768, 65536]
   const image = sharp(fileName, {
     limitInputPixels: false,
@@ -65,7 +71,7 @@ const createPyramid = async (fileName, outFolder = '') => {
       })
     }
   } catch (error) {
-    return error
+    throw new Error('Invalid out directory')
   }
   const resizePromises = []
   const meta = await image.metadata()
