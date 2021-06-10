@@ -25,5 +25,8 @@
   "homepage": "https://github.com/OorfeneD/big-image-viewer#readme",
   "dependencies": {
     "sharp": "^0.28.3"
+  },
+  "devDependencies": {
+    "jest": "^27.0.4"
   }
 }
