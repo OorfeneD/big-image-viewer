@@ -1,57 +1,78 @@
+const { createPyramid, createTiles } = require('./index')
+const http = require('http')
 const sharp = require('sharp')
-const { join, basename, extname } = require('path')
-const { mkdir } = require('fs')
 
-const createTiles = (fileName, outFolder, tileSize=512) => {
+const image = sharp('.images/in8.tif', {
+  limitInputPixels: false
+})
+
+const test = async () => {
+  createPyramid('.images/in8.tif', '.images/pyramids').then(result => console.dir(result))
+  // createTiles('.images/in8.tif', '.images/tiles', tileSize=2048).then(result => console.dir(result))
+}
+
+test()
+
+
+
+const serv = http.createServer(() => {}, () => {})
+serv.listen(3123, (err) => {})
+
+
+const sharp = require('sharp')
+const { join, basename, extname, dirname } = require('path')
+const { mkdirSync, existsSync } = require('fs')
+IS_DEBUG = process.env.DEBUG || false
+
+const createTiles = (fileName, outFolder, tileSize = 512) => {
   return new Promise(async (_resolve, _reject) => {
-  const image = sharp(fileName, {
-    limitInputPixels: false,
-    pages: -1,
-  })
-  const tilesOutFolder = join(outFolder, basename(fileName, extname(fileName)))
+    const image = sharp(fileName, {
+      limitInputPixels: false,
+      pages: -1,
+    })
+    const tilesOutFolder = join(outFolder, basename(fileName, extname(fileName)))
     try {
       if (!existsSync(tilesOutFolder)) {
         mkdirSync(tilesOutFolder, {
           recursive: true
-  })
+        })
       }
     }
     catch (error) {
       _reject(error)
     }
-  const meta = await image.metadata()
-  const promises = []
-  for (let i = 0; i <= Math.floor(meta.width / tileSize); i++) {
-    for (let j = 0; j <= Math.floor(meta.height / tileSize); j++) {
-      promises.push(new Promise(function(resolve, reject) {
-        image.extract({
+    const meta = await image.metadata()
+    const promises = []
+    for (let i = 0; i <= Math.floor(meta.width / tileSize); i++) {
+      for (let j = 0; j <= Math.floor(meta.height / tileSize); j++) {
+        promises.push(new Promise(function (resolve, reject) {
+          image.extract({
             left: i * tileSize,
             top: j * tileSize,
             width: (i + 1) * tileSize < meta.width ? tileSize : meta.width - i * tileSize,
             height: (j + 1) * tileSize < meta.height ? tileSize : meta.height - j * tileSize
           })
-          .jpeg({
+            .jpeg({
               quality: 80
-          })
-          .withMetadata()
-          .toFile(join(tilesOutFolder, `${i}_${j}.jpg`), err => {
-            if (err) {
-              reject(err)
-            }
+            })
+            .withMetadata()
+            .toFile(join(tilesOutFolder, `${i}_${j}.jpg`), err => {
+              if (err) {
+                reject(err)
+              }
               if (!j && IS_DEBUG) {
-              console.log(`Row ${i}/${Math.floor(meta.width / tileSize)}`)
-            }
-            resolve()
-          })
-      }))
+                console.log(`Row ${i}/${Math.floor(meta.width / tileSize)}`)
+              }
+              resolve()
+            })
+        }))
+      }
     }
-  }
-<<<<<<< HEAD
     Promise.all(promises).then(_resolve).catch(_reject)
   })
 }
 
-const createPyramid = (fileName, outFolder="") => {
+const createPyramid = (fileName, outFolder = "") => {
   return new Promise(async (_resolve, _reject) => {
     const scales = [1024, 2048, 4096, 8192, 16384, 32768, 65536]
     const image = sharp(fileName, {
@@ -67,12 +88,12 @@ const createPyramid = (fileName, outFolder="") => {
         })
       }
     }
-    catch(error) {
+    catch (error) {
       _reject(error)
     }
     const resizePromises = []
     const meta = await image.metadata()
-    for(let i = 0; i < scales.length; i++){
+    for (let i = 0; i < scales.length; i++) {
       const scale = scales[i]
       if (scale > Math.max(meta.width, meta.height)) {
         continue
@@ -96,13 +117,9 @@ const createPyramid = (fileName, outFolder="") => {
     }
     await Promise.all(resizePromises).then(_resolve).catch(_reject)
   })
-=======
-  // For future updates with stats presenting:
-  // const results = await Promise.all(promises)
-  await Promise.all(promises)
->>>>>>> parent of 57cd87e... added createPyramid to index.js
 }
 
 module.exports = {
-  createTiles
+  createTiles,
+  createPyramid
 }
