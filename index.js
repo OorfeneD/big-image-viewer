@@ -36,19 +36,19 @@ const createTiles = async (fileName, outFolder, tileSize = 512) => {
           }
           if (!(!options.width || !options.height)) {
             image.extract(options)
-            .jpeg({
-              quality: 80
-            })
-            .withMetadata()
+              .jpeg({
+                quality: 80
+              })
+              .withMetadata()
               .toFile(join(tilesOutFolder, `${imageName}_${i}_${j}.jpg`), err => {
-              if (err) {
-                reject(err)
-              }
-              if (!j && IS_DEBUG) {
-                console.log(`Row ${i}/${Math.floor(meta.width / tileSize)}`)
-              }
-              resolve()
-            })
+                if (err) {
+                  reject(err)
+                }
+                if (!j && IS_DEBUG) {
+                  console.log(`Row ${i}/${Math.floor(meta.width / tileSize)}`)
+                }
+                resolve()
+              })
           } else {
             resolve()
           }
@@ -110,7 +110,17 @@ const createPyramid = async (fileName, outFolder = '') => {
   })
 }
 
+const proceedImage = async (imageFile, outFolder = '', tileSize = 512) => {
+  const images = await createPyramid(imageFile, outFolder)
+  await createTiles(imageFile, outFolder, 1024)
+  for (const i in images) {
+    await createTiles(images[i], outFolder, 1024)
+  }
+  return true
+}
+
 module.exports = {
   createTiles,
-  createPyramid
+  createPyramid,
+  proceedImage
 }
