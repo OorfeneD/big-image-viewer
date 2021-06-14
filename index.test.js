@@ -4,18 +4,18 @@ const { createPyramid, createTiles } = require('./index')
 // Add automatic image generation before test
 // Now test can run only on local machine with .images/in8.tif file
 
-// describe('Main functionality', () => {
-//   test('createPyramid must return not false value', async () => {
-//     const result = await createPyramid('./.images/in8.tif', './.images/pyramids')
-//     expect(result).not.toBeFalsy()
-//   }, 3000)
-//   test('createTiles must return not false value', async () => {
-//     const result = await createTiles('./.images/in8.tif', './.images/tiles', 1024)
-//     expect(result).not.toBeFalsy()
-//   }, 30000)
-// })
+describe('Extra: base functionality', () => {
+  test('createPyramid must return not false value', async () => {
+    const result = await createPyramid('./.images/in8.tif', './.images/pyramids')
+    expect(result).not.toBeFalsy()
+  }, 3000)
+  test('createTiles must return not false value', async () => {
+    const result = await createTiles('./.images/in8.tif', './.images/tiles', 1024)
+    expect(result).not.toBeFalsy()
+  }, 30000)
+})
 
-describe('Bad parameters', () => {
+describe('Main: Bad parameters', () => {
   test('createTiles must return error when parameters are empty', async () => {
     return expect(() => createTiles(null, null)).rejects.toMatchObject(new Error('Parameters must be not empty'))
   })
