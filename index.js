@@ -110,11 +110,11 @@ const createPyramid = async (fileName, outFolder = '') => {
   })
 }
 
-const proceedImage = async (imageFile, outFolder = '', tileSize = 512) => {
+const processImage = async (imageFile, outFolder = '', tileSize = 512) => {
   const images = await createPyramid(imageFile, outFolder)
-  await createTiles(imageFile, outFolder, 1024)
+  await createTiles(imageFile, outFolder, tileSize)
   for (const i in images) {
-    await createTiles(images[i], outFolder, 1024)
+    await createTiles(images[i], outFolder, tileSize)
   }
   return true
 }
@@ -122,5 +122,5 @@ const proceedImage = async (imageFile, outFolder = '', tileSize = 512) => {
 module.exports = {
   createTiles,
   createPyramid,
-  proceedImage
+  processImage
 }

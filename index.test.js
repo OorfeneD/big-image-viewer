@@ -1,4 +1,4 @@
-const { createPyramid, createTiles, proceedImage } = require('./index')
+const { createPyramid, createTiles, processImage } = require('./index')
 
 // TODO:
 // Add automatic image generation before test
@@ -40,16 +40,16 @@ describe('Main: Bad parameters', () => {
   test('createPyramid must return error when directory invalid', async () => {
     return expect(() => createPyramid('.images/in8.tif', 'invalid-directory*')).rejects.toMatchObject(new Error('Invalid out directory'))
   })
-  test('proceedImage must return error when parameters are empty', async () => {
-    return expect(() => proceedImage(null, null)).rejects.toMatchObject(new Error('Parameters must be not empty'))
+  test('processImage must return error when parameters are empty', async () => {
+    return expect(() => processImage(null, null)).rejects.toMatchObject(new Error('Parameters must be not empty'))
   })
-  test('proceedImage must return error when parameters are not a string', async () => {
-    return expect(() => proceedImage([], '.images/pyramids')).rejects.toMatchObject(new Error('Parameters must be are string'))
+  test('processImage must return error when parameters are not a string', async () => {
+    return expect(() => processImage([], '.images/pyramids')).rejects.toMatchObject(new Error('Parameters must be are string'))
   })
-  test('proceedImage must return error when image is not exist', async () => {
-    return expect(() => proceedImage('not-exist.tif', '.images/pyramids')).rejects.toMatchObject(new Error('Image file not found'))
+  test('processImage must return error when image is not exist', async () => {
+    return expect(() => processImage('not-exist.tif', '.images/pyramids')).rejects.toMatchObject(new Error('Image file not found'))
   })
-  test('proceedImage must return error when directory invalid', async () => {
-    return expect(() => proceedImage('.images/in8.tif', 'invalid-directory*')).rejects.toMatchObject(new Error('Invalid out directory'))
+  test('processImage must return error when directory invalid', async () => {
+    return expect(() => processImage('.images/in8.tif', 'invalid-directory*')).rejects.toMatchObject(new Error('Invalid out directory'))
   })
 })
