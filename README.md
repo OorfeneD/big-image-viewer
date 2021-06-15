@@ -7,17 +7,16 @@ The pyramids created keep the proportions of the original image. The larger side
 
 ## Installation
 
-npm:
-
-```$ npm i big-image-viewer```
-
-Yarn:
-
-```$ yarn add big-image-viewer```
+```$
+# npm
+npm i big-image-viewer
+# yarn
+yarn add big-image-viewer
+```
 
 ## Using example
 
-Basing use example. Creating pyramids and tiles for input image, with tileSize 1024x1024 (default is 512x512)
+Basing use example. Creating pyramids and tiles for input image, with tileSize **1024x1024** (default is **512x512**)
 
 ```javascript
   import { processImage } from 'big-image-viewer'
